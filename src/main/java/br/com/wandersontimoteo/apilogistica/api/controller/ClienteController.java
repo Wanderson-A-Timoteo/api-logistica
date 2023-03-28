@@ -2,6 +2,7 @@ package br.com.wandersontimoteo.apilogistica.api.controller;
 
 import br.com.wandersontimoteo.apilogistica.domain.model.Cliente;
 import br.com.wandersontimoteo.apilogistica.domain.repository.ClienteRepository;
+import br.com.wandersontimoteo.apilogistica.domain.service.CatalogoClienteService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.util.List;
 public class ClienteController {
 
     private ClienteRepository clienteRepository;
+    private CatalogoClienteService catalogoClienteService;
 
     @GetMapping
     public List<Cliente> listar() {
@@ -31,8 +33,9 @@ public class ClienteController {
     }
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cliente cadastrar(@Valid @RequestBody Cliente cliente) {
-        return clienteRepository.save(cliente);
+    public Cliente adicionar(@Valid @RequestBody Cliente cliente) {
+
+        return catalogoClienteService.salvar(cliente);
     }
     @PutMapping("/{clienteId}")
     public ResponseEntity<Cliente> atualizar(@PathVariable Long clienteId,
@@ -42,7 +45,7 @@ public class ClienteController {
         }
 
         cliente.setId(clienteId);
-        cliente = clienteRepository.save(cliente);
+        cliente = catalogoClienteService.salvar(cliente);
 
         return ResponseEntity.ok(cliente);
     }
@@ -52,7 +55,8 @@ public class ClienteController {
             return ResponseEntity.notFound().build();
         }
 
-        clienteRepository.deleteById(clienteId);
+        catalogoClienteService.excluir(clienteId);
+
         return ResponseEntity.noContent().build();
     }
 
