@@ -1,5 +1,6 @@
 package br.com.wandersontimoteo.apilogistica.domain.service;
 
+import br.com.wandersontimoteo.apilogistica.domain.exception.NegocioException;
 import br.com.wandersontimoteo.apilogistica.domain.model.Cliente;
 import br.com.wandersontimoteo.apilogistica.domain.repository.ClienteRepository;
 import lombok.AllArgsConstructor;
@@ -14,7 +15,15 @@ public class CatalogoClienteService {
     @Transactional
     public Cliente salvar(Cliente cliente) {
 
-      return clienteRepository.save(cliente);
+        boolean emailEmUso = clienteRepository.findByEmail(cliente.getEmail())
+                .stream()
+                .anyMatch(clienteExistente -> !clienteExistente.equals(cliente));
+
+        if(emailEmUso) {
+            throw new NegocioException("Já existe um cliente cadastrado com este e-mail.");
+        }
+
+        return clienteRepository.save(cliente);
     }
     @Transactional
     public void excluir(Long clienteId) {
