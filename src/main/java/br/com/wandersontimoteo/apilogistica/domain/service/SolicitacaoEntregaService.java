@@ -1,5 +1,6 @@
 package br.com.wandersontimoteo.apilogistica.domain.service;
 
+import br.com.wandersontimoteo.apilogistica.domain.model.Cliente;
 import br.com.wandersontimoteo.apilogistica.domain.model.Entrega;
 import br.com.wandersontimoteo.apilogistica.domain.model.StatusEntrega;
 import br.com.wandersontimoteo.apilogistica.domain.repository.EntregaRepository;
@@ -13,11 +14,14 @@ import java.time.LocalDateTime;
 @Service
 public class SolicitacaoEntregaService {
 
+    private CatalogoClienteService catalogoClienteService;
     private EntregaRepository entregaRepository;
 
     @Transactional
     public Entrega solicitar(Entrega entrega) {
+        Cliente cliente = catalogoClienteService.buscar(entrega.getCliente().getId());
 
+        entrega.setCliente(cliente);
         entrega.setStatus(StatusEntrega.PENDENTE);
         entrega.setDataPedido(LocalDateTime.now());
 
