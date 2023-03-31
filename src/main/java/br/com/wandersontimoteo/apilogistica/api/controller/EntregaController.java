@@ -1,6 +1,6 @@
 package br.com.wandersontimoteo.apilogistica.api.controller;
 
-import br.com.wandersontimoteo.apilogistica.api.model.DestinatarioModel;
+import br.com.wandersontimoteo.apilogistica.api.mapper.EntregaMapper;
 import br.com.wandersontimoteo.apilogistica.api.model.EntregaModel;
 import br.com.wandersontimoteo.apilogistica.domain.model.Entrega;
 import br.com.wandersontimoteo.apilogistica.domain.repository.EntregaRepository;
@@ -20,6 +20,7 @@ public class EntregaController {
 
     private EntregaRepository entregaRepository;
     private SolicitacaoEntregaService solicitacaoEntregaService;
+    private EntregaMapper entregaMapper;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -35,23 +36,7 @@ public class EntregaController {
     @GetMapping("/{entregaId}")
     public ResponseEntity<EntregaModel> buscar(@PathVariable Long entregaId) {
         return entregaRepository.findById(entregaId)
-                .map(entrega -> {
-                    EntregaModel entregaModel = new EntregaModel();
-                    entregaModel.setId(entrega.getId());
-                    entregaModel.setNomeCliente(entrega.getCliente().getNome());
-                    entregaModel.setDestinatario(new DestinatarioModel());
-                    entregaModel.getDestinatario().setNome(entrega.getDestinatario().getNome());
-                    entregaModel.getDestinatario().setLogradouro(entrega.getDestinatario().getLogradouro());
-                    entregaModel.getDestinatario().setNumero(entrega.getDestinatario().getNumero());
-                    entregaModel.getDestinatario().setComplemento(entrega.getDestinatario().getComplemento());
-                    entregaModel.getDestinatario().setBairro(entrega.getDestinatario().getBairro());
-                    entregaModel.setStatus(entrega.getStatus());
-                    entregaModel.setTaxa(entrega.getTaxa());
-                    entregaModel.setDataPedido(entrega.getDataPedido());
-                    entregaModel.setDataFinalizacao(entrega.getDataFinalizacao());
-
-                    return ResponseEntity.ok(entregaModel);
-                })
+                .map(entrega -> ResponseEntity.ok(entregaMapper.toModel(entrega)))
                 .orElse(ResponseEntity.notFound().build());
     }
 }
