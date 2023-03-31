@@ -24,13 +24,14 @@ public class EntregaController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Entrega solicitar(@Valid @RequestBody Entrega entrega) {
-        return solicitacaoEntregaService.solicitar(entrega);
+    public EntregaModel solicitar(@Valid @RequestBody Entrega entrega) {
+        Entrega entregaSolicitada = solicitacaoEntregaService.solicitar(entrega);
+        return entregaMapper.toModel(entregaSolicitada);
     }
 
     @GetMapping
-    public List<Entrega> listar() {
-        return entregaRepository.findAll();
+    public List<EntregaModel> listar() {
+        return entregaMapper.toCollectionModel(entregaRepository.findAll());
     }
 
     @GetMapping("/{entregaId}")
