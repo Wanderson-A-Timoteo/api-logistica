@@ -2,6 +2,7 @@ package br.com.wandersontimoteo.apilogistica.api.controller;
 
 import br.com.wandersontimoteo.apilogistica.api.mapper.EntregaMapper;
 import br.com.wandersontimoteo.apilogistica.api.model.EntregaModel;
+import br.com.wandersontimoteo.apilogistica.api.model.request.EntregaRequestModel;
 import br.com.wandersontimoteo.apilogistica.domain.model.Entrega;
 import br.com.wandersontimoteo.apilogistica.domain.repository.EntregaRepository;
 import br.com.wandersontimoteo.apilogistica.domain.service.SolicitacaoEntregaService;
@@ -24,8 +25,9 @@ public class EntregaController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public EntregaModel solicitar(@Valid @RequestBody Entrega entrega) {
-        Entrega entregaSolicitada = solicitacaoEntregaService.solicitar(entrega);
+    public EntregaModel solicitar(@Valid @RequestBody EntregaRequestModel entregaRequestModel) {
+        Entrega novaEntrega = entregaMapper.toEntity(entregaRequestModel);
+        Entrega entregaSolicitada = solicitacaoEntregaService.solicitar(novaEntrega);
         return entregaMapper.toModel(entregaSolicitada);
     }
 

@@ -1,6 +1,7 @@
 package br.com.wandersontimoteo.apilogistica.api.mapper;
 
 import br.com.wandersontimoteo.apilogistica.api.model.EntregaModel;
+import br.com.wandersontimoteo.apilogistica.api.model.request.EntregaRequestModel;
 import br.com.wandersontimoteo.apilogistica.domain.model.Entrega;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -23,5 +24,9 @@ public class EntregaMapper {
         return entregas.stream()
                 .map(this::toModel)
                 .collect(Collectors.toList());
+    }
+
+    public Entrega toEntity(EntregaRequestModel entregaRequestModel) {
+        return modelMapper.map(entregaRequestModel, Entrega.class);
     }
 }
