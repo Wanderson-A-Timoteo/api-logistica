@@ -5,6 +5,7 @@ import br.com.wandersontimoteo.apilogistica.api.model.EntregaModel;
 import br.com.wandersontimoteo.apilogistica.api.model.request.EntregaRequestModel;
 import br.com.wandersontimoteo.apilogistica.domain.model.Entrega;
 import br.com.wandersontimoteo.apilogistica.domain.repository.EntregaRepository;
+import br.com.wandersontimoteo.apilogistica.domain.service.FinalizacaoEntregaService;
 import br.com.wandersontimoteo.apilogistica.domain.service.SolicitacaoEntregaService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import java.util.List;
 public class EntregaController {
 
     private EntregaRepository entregaRepository;
+    private FinalizacaoEntregaService finalizacaoEntregaService;
     private SolicitacaoEntregaService solicitacaoEntregaService;
     private EntregaMapper entregaMapper;
 
@@ -41,5 +43,11 @@ public class EntregaController {
         return entregaRepository.findById(entregaId)
                 .map(entrega -> ResponseEntity.ok(entregaMapper.toModel(entrega)))
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{entregaId}/finalizacao")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void finalizar(@PathVariable Long entregaId) {
+        finalizacaoEntregaService.finalizar(entregaId);
     }
 }
